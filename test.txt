@@ -1,0 +1,70 @@
+------------
+cvlc BigBuckBunny_320x180.mp4 --sout "#rtp{sdp=rtsp://192.168.1.35:8554/test}"
+ffplay rtsp://192.168.1.35:8554/test
+-----------------
+cvlc BigBuckBunny_320x180.mp4 --sout "#rtp{sdp=rtsp://127.0.0.1:8554/test}"
+ffplay rtsp://127.0.0.1:8554/test
+---------------------------------
+wget https://github.com/bluenviron/mediamtx/releases/download/v1.18.1/mediamtx_v1.18.1_linux_amd64.tar.gz
+tar -xzf mediamtx_v1.18.1_linux_amd64.tar.gz
+
+------------------
+rtsp://IP_PROXY/mycam/192.168.1.50/1
+rtsp://192.168.1.50/1
+
+ffplay rtsp://192.168.1.35:8555/mycam/92.168.1.35/test
+ffplay rtsp://127.0.0.1:8555/mycam/127.0.0.1/8554/test
+-------------------
+paths:
+  "~^mycam/([^/]+)/([^/]+)/(.+)$":
+    source: rtsp://$1:8554/$2
+    sourceOnDemand: yes
+    
+-----------------
+docker run \
+  --name mediamtx \
+  --restart unless-stopped \
+  -p 8555:8554 \
+  -v $HOME/proxy-mediamtx/mediamtx.yml:/mediamtx.yml \
+  -v $HOME/proxy-mediamtx/logs:/logs \
+  bluenviron/mediamtx:1.18.1
+  
+---------------------
+rtsp://127.0.0.1:8555/mycam/127.0.0.1:8554/test
+
+-------------------------------------------
+docker run \
+  --name mediamtx \
+  --restart unless-stopped \
+  -p 8555:8554 \
+  -v $HOME/proxy-mediamtx/mediamtx.yml:/mediamtx.yml \
+  -v $HOME/proxy-mediamtx/logs:/logs \
+  mediamtx:dev
+
+-------------------------------------------
+-------------------------------------------
+-------------------------------------------
+-------------------------------------------
+tar -xzf mediamtx_v1.19.0_linux_amd64.tar.gz
+chmod +x mediamtx
+-------------------------------------------
+paths:
+  "~^mycam/([^/]+)/([^/]+)/(.+)$":
+    source: rtsp://$1:$2/$3
+    sourceOnDemand: yes
+
+-------------------------------------------
+./mediamtx mediamtx.yml
+
+-------------------------------------------
+cvlc BigBuckBunny_320x180.mp4 --sout "#rtp{sdp=rtsp://192.168.1.35:8555/test}"
+ffplay rtsp://127.0.0.1:8554/mycam/192.168.1.35/8555/test
+
+-------------------------------------------
+cvlc BigBuckBunny_320x180.mp4 --sout "#rtp{sdp=rtsp://192.168.1.35:8556/test2}"
+ffplay rtsp://127.0.0.1:8554/mycam/192.168.1.35/8556/test2
+
+-------------------------------------------
+
+
+Add dynamic stream routing RTSP
